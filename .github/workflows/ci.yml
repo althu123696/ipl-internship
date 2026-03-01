@@ -35,4 +35,11 @@ jobs:
           echo "Building and pushing $IMAGE_ID"
           docker buildx build --push -t "$IMAGE_ID" -f streamlit/Dockerfile .
 
-  
+  deploy:
+    runs-on: self-hosted
+    needs: build
+    steps:
+      - name: Deploy with docker-compose
+        run: |
+          docker-compose pull
+          docker-compose up -d
