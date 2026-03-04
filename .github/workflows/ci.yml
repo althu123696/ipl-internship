@@ -50,11 +50,13 @@ jobs:
           password: ${{ secrets.GHCR_TOKEN }}
 
       - name: Verify files
+        shell: pwsh
         run: |
-          echo "Listing repo contents..."
-          ls -la
+          Write-Output "Listing repo contents..."
+          Get-ChildItem -Force
 
       - name: Deploy with docker-compose
+        shell: pwsh
         run: |
           docker compose -f docker-compose.yml pull
           docker compose -f docker-compose.yml up -d

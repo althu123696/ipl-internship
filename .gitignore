@@ -29,3 +29,13 @@ Thumbs.db
 build/
 dist/
 *.egg-info/
+# Ignore GitHub Actions runner cache
+actions-runner/
+
+# Ignore Docker build artifacts
+*.log
+*.tmp
+
+# Ignore environment files
+.env
+
