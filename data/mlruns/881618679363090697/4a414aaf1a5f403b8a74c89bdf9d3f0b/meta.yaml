@@ -1,0 +1,15 @@
+artifact_uri: file:///C:/Users/hp/Desktop/IPL_PROJECT/mlruns/881618679363090697/4a414aaf1a5f403b8a74c89bdf9d3f0b/artifacts
+end_time: 1771517132167
+entry_point_name: ''
+experiment_id: '881618679363090697'
+lifecycle_stage: active
+run_id: 4a414aaf1a5f403b8a74c89bdf9d3f0b
+run_name: Optuna_Best_Run
+run_uuid: 4a414aaf1a5f403b8a74c89bdf9d3f0b
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1771517132124
+status: 3
+tags: []
+user_id: hp

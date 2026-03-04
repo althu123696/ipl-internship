@@ -25,13 +25,13 @@ jobs:
 
       - name: Build and push FastAPI image
         run: |
-          IMAGE_ID=$(echo "ghcr.io/${{ github.repository }}/fastapi:latest" | tr '[:upper:]' '[:lower:]')
+          IMAGE_ID="ghcr.io/${{ github.repository }}/fastapi:latest"
           echo "Building and pushing $IMAGE_ID"
           docker buildx build --push -t "$IMAGE_ID" -f app/Dockerfile .
 
       - name: Build and push Streamlit image
         run: |
-          IMAGE_ID=$(echo "ghcr.io/${{ github.repository }}/streamlit:latest" | tr '[:upper:]' '[:lower:]')
+          IMAGE_ID="ghcr.io/${{ github.repository }}/streamlit:latest"
           echo "Building and pushing $IMAGE_ID"
           docker buildx build --push -t "$IMAGE_ID" -f streamlit/Dockerfile .
 
@@ -39,7 +39,10 @@ jobs:
     runs-on: self-hosted
     needs: build
     steps:
+      - name: Log in to GitHub Container Registry
+        run: echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u althu123696 --password-stdin
+
       - name: Deploy with docker-compose
         run: |
-          docker compose pull
-          docker compose up -d
+          docker compose -f docker-compose.prod.yml pull
+          docker compose -f docker-compose.prod.yml up -d

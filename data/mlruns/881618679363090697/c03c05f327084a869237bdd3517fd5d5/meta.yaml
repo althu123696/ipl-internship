@@ -1,0 +1,15 @@
+artifact_uri: file:///C:/Users/hp/Desktop/IPL_PROJECT/mlruns/881618679363090697/c03c05f327084a869237bdd3517fd5d5/artifacts
+end_time: 1771910719695
+entry_point_name: ''
+experiment_id: '881618679363090697'
+lifecycle_stage: active
+run_id: c03c05f327084a869237bdd3517fd5d5
+run_name: thoughtful-duck-494
+run_uuid: c03c05f327084a869237bdd3517fd5d5
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1771910714109
+status: 3
+tags: []
+user_id: hp

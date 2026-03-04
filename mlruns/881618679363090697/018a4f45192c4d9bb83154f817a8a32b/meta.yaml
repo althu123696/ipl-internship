@@ -1,0 +1,15 @@
+artifact_uri: file:///C:/Users/hp/Desktop/IPL_PROJECT/mlruns/881618679363090697/018a4f45192c4d9bb83154f817a8a32b/artifacts
+end_time: 1772435605855
+entry_point_name: ''
+experiment_id: '881618679363090697'
+lifecycle_stage: active
+run_id: 018a4f45192c4d9bb83154f817a8a32b
+run_name: blushing-cat-942
+run_uuid: 018a4f45192c4d9bb83154f817a8a32b
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1772435600259
+status: 3
+tags: []
+user_id: hp

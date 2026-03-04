@@ -1,0 +1,14 @@
+artifact_uri: file:///C:/Users/hp/Desktop/IPL_PROJECT/mlruns/881618679363090697/0b6ad5dc319a497099d279cb42effac1/artifacts
+end_time: 1771516797983
+entry_point_name: ''
+experiment_id: '881618679363090697'
+lifecycle_stage: active
+run_id: 0b6ad5dc319a497099d279cb42effac1
+run_name: best model
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1771516797887
+status: 3
+tags: []
+user_id: hp
