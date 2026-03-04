@@ -82,7 +82,7 @@ To interact with the trained model through a web interface:
 2. Launch streamlit app 
 streamlit run app/streamlit_app.py
 
-dockerize
+
 
 
 

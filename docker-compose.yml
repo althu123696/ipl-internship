@@ -1,87 +1,48 @@
+name: CI/CD Pipeline
 
+on:
+  push:
+    branches:
+      - main
 
-services:
-  fastapi:
-    image: ghcr.io/althu123696/ipl-ii/fastapi:latest
-    ports:
-      - "8000:8000"
-    volumes:
-      - ./model:/app/model
-      - ./data:/app/data
-    restart: always
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/docs"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+jobs:
+  build:
+    runs-on: ubuntu-latest
 
-  streamlit:
-    image: ghcr.io/althu123696/ipl-ii/streamlit:latest
-    ports:
-      - "8501:8501"
-    depends_on:
-      - fastapi
-    volumes:
-      - ./data:/app/data
-    restart: always
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8501"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-  mlflow:
-    image: ghcr.io/mlflow/mlflow:latest
-    command: mlflow ui --host 0.0.0.0 --port 5000
-    ports:
-      - "5000:5000"
-    volumes:
-      - ./data/mlruns:/mlruns
-    environment:
-      - MLFLOW_ALLOW_ORIGIN=*
-      - MLFLOW_SERVER_HOST=mlflow
-      - MLFLOW_TRACKING_URI=file:/mlruns
-    restart: always
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5000"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-  prometheus:
-    image: prom/prometheus:latest
-    ports:
-      - "9090:9090"
-    volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
-      - ./alert_rules.yml:/etc/prometheus/alert_rules.yml
-      - prometheus_data:/prometheus
-    restart: always
-    healthcheck:
-      test: ["CMD", "wget", "--spider", "http://localhost:9090/-/ready"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: althu123696
+          password: ${{ secrets.GHCR_TOKEN }}
 
-  grafana:
-    image: grafana/grafana:latest
-    ports:
-      - "3000:3000"
-    volumes:
-      - grafana_data:/var/lib/grafana
-    environment:
-      - GF_SECURITY_ADMIN_USER=admin
-      - GF_SECURITY_ADMIN_PASSWORD=admin123
-      - GF_SECURITY_DISABLE_INITIAL_ADMIN_CREATION=false
-    depends_on:
-      - prometheus
-    restart: always
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/login"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+      - name: Build and push FastAPI image
+        run: |
+          IMAGE_ID="ghcr.io/althu123696/ipl-ii/fastapi:latest"
+          echo "Building and pushing $IMAGE_ID"
+          docker buildx build --push -t "$IMAGE_ID" -f app/Dockerfile .
 
-volumes:
-  prometheus_data:
-  grafana_data:
+      - name: Build and push Streamlit image
+        run: |
+          IMAGE_ID="ghcr.io/althu123696/ipl-ii/streamlit:latest"
+          echo "Building and pushing $IMAGE_ID"
+          docker buildx build --push -t "$IMAGE_ID" -f streamlit/Dockerfile .
+
+  deploy:
+    runs-on: self-hosted
+    needs: build
+    steps:
+      - name: Log in to GitHub Container Registry
+        run: echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u althu123696 --password-stdin
+
+      - name: Deploy with docker-compose
+        run: |
+          docker compose -f docker-compose.yml pull
+          docker compose -f docker-compose.yml up -d
