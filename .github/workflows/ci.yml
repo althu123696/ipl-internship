@@ -38,6 +38,7 @@ jobs:
   deploy:
     runs-on: self-hosted
     needs: build
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -50,13 +51,13 @@ jobs:
           password: ${{ secrets.GHCR_TOKEN }}
 
       - name: Verify files
-        shell: pwsh
+        shell: powershell
         run: |
           Write-Output "Listing repo contents..."
           Get-ChildItem -Force
 
       - name: Deploy with docker-compose
-        shell: pwsh
+        shell: powershell
         run: |
           docker compose -f docker-compose.yml pull
-          docker compose -f docker-compose.yml up -d
+          docker compose -f docker-compose.yml up -d --remove-orphans
