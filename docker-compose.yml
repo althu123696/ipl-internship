@@ -1,48 +1,35 @@
-name: CI/CD Pipeline
+services:
+  fastapi:
+    image: ghcr.io/althu123696/ipl-ii/fastapi:latest
+    container_name: fastapi
+    restart: always
+    ports:
+      - "8000:8000"
 
-on:
-  push:
-    branches:
-      - main
+  streamlit:
+    image: ghcr.io/althu123696/ipl-ii/streamlit:latest
+    container_name: streamlit
+    restart: always
+    ports:
+      - "8501:8501"
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    restart: always
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    restart: always
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Log in to GitHub Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: althu123696
-          password: ${{ secrets.GHCR_TOKEN }}
-
-      - name: Build and push FastAPI image
-        run: |
-          IMAGE_ID="ghcr.io/althu123696/ipl-ii/fastapi:latest"
-          echo "Building and pushing $IMAGE_ID"
-          docker buildx build --push -t "$IMAGE_ID" -f app/Dockerfile .
-
-      - name: Build and push Streamlit image
-        run: |
-          IMAGE_ID="ghcr.io/althu123696/ipl-ii/streamlit:latest"
-          echo "Building and pushing $IMAGE_ID"
-          docker buildx build --push -t "$IMAGE_ID" -f streamlit/Dockerfile .
-
-  deploy:
-    runs-on: self-hosted
-    needs: build
-    steps:
-      - name: Log in to GitHub Container Registry
-        run: echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u althu123696 --password-stdin
-
-      - name: Deploy with docker-compose
-        run: |
-          docker compose -f docker-compose.yml pull
-          docker compose -f docker-compose.yml up -d
+volumes:
+  grafana-data:
