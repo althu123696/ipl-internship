@@ -39,12 +39,20 @@ jobs:
     runs-on: self-hosted
     needs: build
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: althu123696
           password: ${{ secrets.GHCR_TOKEN }}
+
+      - name: Verify files
+        run: |
+          echo "Listing repo contents..."
+          ls -la
 
       - name: Deploy with docker-compose
         run: |
