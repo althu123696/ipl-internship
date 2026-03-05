@@ -32,7 +32,7 @@ jobs:
             -f streamlit/Dockerfile .
 
   deploy:
-    runs-on: [self-hosted, Windows]   # match your runner labels
+    runs-on: [self-hosted, Windows,X64]   # match your runner labels
     needs: build
     steps:
       - name: Checkout repo
