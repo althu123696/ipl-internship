@@ -1,6 +1,9 @@
 
 services:
   fastapi:
+    build:
+      context: .
+      dockerfile: app/Dockerfile
     image: ghcr.io/althu123696/ipl-ii/fastapi:latest
     container_name: fastapi
     restart: always
@@ -8,6 +11,9 @@ services:
       - "8000:8000"
 
   streamlit:
+    build:
+      context: .
+      dockerfile: streamlit/Dockerfile
     image: ghcr.io/althu123696/ipl-ii/streamlit:latest
     container_name: streamlit
     restart: always
