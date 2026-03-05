@@ -9,6 +9,18 @@ services:
     restart: always
     ports:
       - "8000:8000"
+    environment:
+      - DEBUG=${DEBUG}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: "1g"
 
   streamlit:
     build:
@@ -19,6 +31,11 @@ services:
     restart: always
     ports:
       - "8501:8501"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8501/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   prometheus:
     image: prom/prometheus:latest
@@ -33,6 +50,11 @@ services:
     command: --config.file=/etc/prometheus/prometheus.yml
     depends_on:
       - fastapi
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "http://localhost:9090/-/healthy"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   grafana:
     image: grafana/grafana:latest
@@ -44,10 +66,15 @@ services:
       - grafana-data:/var/lib/grafana
       - ./provisioning:/etc/grafana/provisioning
     environment:
-      - GF_SECURITY_ADMIN_USER=admin
-      - GF_SECURITY_ADMIN_PASSWORD=admin123
+      - GF_SECURITY_ADMIN_USER=${GF_SECURITY_ADMIN_USER}
+      - GF_SECURITY_ADMIN_PASSWORD=${GF_SECURITY_ADMIN_PASSWORD}
     depends_on:
       - prometheus
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   mlflow:
     image: ghcr.io/mlflow/mlflow:latest
@@ -57,12 +84,17 @@ services:
       - "5000:5000"
     volumes:
       - ./mlruns:/mlflow/mlruns
-      - mlflow-data:/mlflow
+      - ./mlflow:/mlflow 
     command: >
       mlflow server
-      --backend-store-uri sqlite:///mlflow/mlflow.db
+      --backend-store-uri file:/mlflow/mlruns
       --default-artifact-root /mlflow/mlruns
       --host 0.0.0.0
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
 volumes:
   prometheus-data:
