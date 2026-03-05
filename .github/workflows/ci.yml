@@ -32,12 +32,21 @@ jobs:
             -f streamlit/Dockerfile .
 
   deploy:
-    runs-on: self-hosted
+    runs-on: [self-hosted, Windows]   # match your runner labels
     needs: build
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repo
+        uses: actions/checkout@v4
 
-      - uses: docker/login-action@v3
+      - name: Verify Docker availability
+        shell: powershell
+        run: |
+          Write-Output "Checking Docker installation..."
+          docker --version
+          docker compose version
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: althu123696
@@ -46,5 +55,7 @@ jobs:
       - name: Deploy with Docker Compose
         shell: powershell
         run: |
+          Write-Output "Starting deploy step..."
           docker compose -f docker-compose.yml -f docker-compose.override.yml pull
           docker compose -f docker-compose.yml -f docker-compose.override.yml up -d --remove-orphans
+          Write-Output "Deploy step finished."
