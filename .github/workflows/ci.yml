@@ -58,6 +58,9 @@ jobs:
           cd ${{ github.workspace }}
           docker compose -f docker-compose.yml up -d
 
-      - name: Verify services
+      - name: Verify containers
+        run: docker ps
+
+      - name: Health check (FastAPI)
         run: |
-          docker ps
+          curl http://localhost:8000/health || exit 1
