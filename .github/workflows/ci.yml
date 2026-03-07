@@ -31,4 +31,15 @@ jobs:
             -t ghcr.io/althu123696/ipl-internship/streamlit:latest \
             -f streamlit/Dockerfile .
 
+  deploy:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Deploy with Docker Compose
+        run: |
+          docker compose pull
+          docker compose up -d
+
   

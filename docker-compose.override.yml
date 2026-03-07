@@ -1,6 +1,0 @@
-services:
-  fastapi:
-    image: ghcr.io/althu123696/ipl-internship/fastapi:latest
-
-  streamlit:
-    image: ghcr.io/althu123696/ipl-internship/streamlit:latest

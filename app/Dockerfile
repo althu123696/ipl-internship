@@ -6,7 +6,6 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy FastAPI app code (this includes app/model automatically)
 COPY app/ /app
 
 EXPOSE 8000
