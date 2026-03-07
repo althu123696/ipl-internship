@@ -33,13 +33,13 @@ jobs:
 
   deploy:
     runs-on: self-hosted
+    needs: build   # 👈 ensures deploy waits for build to finish
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
 
       - name: Deploy with Docker Compose
         run: |
+          cd ${{ github.workspace }}
           docker compose pull
           docker compose up -d
-
-  
