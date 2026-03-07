@@ -35,8 +35,10 @@ jobs:
     runs-on: self-hosted
     needs: build
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+
+      - name: Docker login (Windows runner)
+        run: echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u althu123696 --password-stdin
 
       - name: Debug environment
         run: |
@@ -44,10 +46,18 @@ jobs:
           dir ${{ github.workspace }}
           docker --version
           docker compose version
-          docker ps
+          docker ps -a
 
-      - name: Deploy with Docker Compose
+      - name: Pull images
         run: |
           cd ${{ github.workspace }}
           docker compose -f docker-compose.yml pull
+
+      - name: Start containers
+        run: |
+          cd ${{ github.workspace }}
           docker compose -f docker-compose.yml up -d
+
+      - name: Verify services
+        run: |
+          docker ps
