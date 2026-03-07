@@ -51,15 +51,15 @@ jobs:
       - name: Pull latest images
         run: |
           cd ${{ github.workspace }}
-          docker compose -f docker-compose.yml pull
+          docker compose -f docker-compose.yml pull --progress=plain
 
       - name: Start containers
         run: |
           cd ${{ github.workspace }}
-          docker compose -f docker-compose.yml up -d
+          docker compose -f docker-compose.yml up -d --remove-orphans --progress=plain
 
       - name: Wait for services to start
-        run: Start-Sleep -Seconds 30
+        run: Start-Sleep -Seconds 60
 
       - name: Verify containers
         run: docker ps -a
@@ -79,6 +79,6 @@ jobs:
       - name: Health check (MLflow)
         run: Invoke-WebRequest http://localhost:5000/ -UseBasicParsing
 
-      - name: Show logs on failure
-        if: failure()
-        run: docker compose logs --tail=50
+      - name: Show container logs
+        if: always()
+        run: docker compose logs --tail=100
