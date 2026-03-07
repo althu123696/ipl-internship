@@ -22,13 +22,13 @@ jobs:
       - name: Build & Push FastAPI
         run: |
           docker buildx build --push \
-            -t ghcr.io/althu123696/ipl-internship/fastapi:latest \
+            -t ghcr.io/althu123696/ipl-ii/fastapi:latest \
             -f app/Dockerfile .
 
       - name: Build & Push Streamlit
         run: |
           docker buildx build --push \
-            -t ghcr.io/althu123696/ipl-internship/streamlit:latest \
+            -t ghcr.io/althu123696/ipl-ii/streamlit:latest \
             -f streamlit/Dockerfile .
 
   deploy:
@@ -48,7 +48,7 @@ jobs:
           docker compose version
           docker ps -a
 
-      - name: Pull images
+      - name: Pull latest images
         run: |
           cd ${{ github.workspace }}
           docker compose -f docker-compose.yml pull
@@ -63,4 +63,20 @@ jobs:
 
       - name: Health check (FastAPI)
         run: |
-          curl http://localhost:8000/health || exit 1
+          curl http://localhost:8000/ || exit 1
+
+      - name: Health check (Streamlit)
+        run: |
+          curl http://localhost:8501/ || exit 1
+
+      - name: Health check (Prometheus)
+        run: |
+          curl http://localhost:9090/-/healthy || exit 1
+
+      - name: Health check (Grafana)
+        run: |
+          curl http://localhost:3000/api/health || exit 1
+
+      - name: Health check (MLflow)
+        run: |
+          curl http://localhost:5000/ || exit 1

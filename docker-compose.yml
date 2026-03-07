@@ -1,9 +1,7 @@
+version: "3.9"
 
 services:
   fastapi:
-    build:
-      context: .
-      dockerfile: app/Dockerfile
     image: ghcr.io/althu123696/ipl-ii/fastapi:latest
     container_name: fastapi
     restart: always
@@ -23,9 +21,6 @@ services:
           memory: "1g"
 
   streamlit:
-    build:
-      context: .
-      dockerfile: streamlit/Dockerfile
     image: ghcr.io/althu123696/ipl-ii/streamlit:latest
     container_name: streamlit
     restart: always
