@@ -58,25 +58,27 @@ jobs:
           cd ${{ github.workspace }}
           docker compose -f docker-compose.yml up -d
 
+      - name: Wait for services to start
+        run: Start-Sleep -Seconds 30
+
       - name: Verify containers
         run: docker ps -a
 
       - name: Health check (FastAPI)
-        run: |
-          Invoke-WebRequest http://localhost:8000/ -UseBasicParsing
+        run: Invoke-WebRequest http://localhost:8000/ -UseBasicParsing
 
       - name: Health check (Streamlit)
-        run: |
-          Invoke-WebRequest http://localhost:8501/ -UseBasicParsing
+        run: Invoke-WebRequest http://localhost:8501/ -UseBasicParsing
 
       - name: Health check (Prometheus)
-        run: |
-          Invoke-WebRequest http://localhost:9090/-/healthy -UseBasicParsing
+        run: Invoke-WebRequest http://localhost:9090/-/healthy -UseBasicParsing
 
       - name: Health check (Grafana)
-        run: |
-          Invoke-WebRequest http://localhost:3000/api/health -UseBasicParsing
+        run: Invoke-WebRequest http://localhost:3000/api/health -UseBasicParsing
 
       - name: Health check (MLflow)
-        run: |
-          Invoke-WebRequest http://localhost:5000/ -UseBasicParsing
+        run: Invoke-WebRequest http://localhost:5000/ -UseBasicParsing
+
+      - name: Show logs on failure
+        if: failure()
+        run: docker compose logs --tail=50

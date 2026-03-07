@@ -10,10 +10,6 @@ __pycache__/
 # Ignore Jupyter notebook checkpoints
 .ipynb_checkpoints/
 
-# Ignore model files (optional, if large)
-*.pkl
-*.joblib
-
 # Ignore logs
 *.log
 

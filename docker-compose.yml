@@ -1,6 +1,9 @@
 
 services:
   fastapi:
+    build:
+      context: .
+      dockerfile: app/Dockerfile   # adjust if your Dockerfile is elsewhere
     image: ghcr.io/althu123696/ipl-ii/fastapi:latest
     container_name: fastapi
     restart: always
@@ -8,6 +11,8 @@ services:
       - "8000:8000"
     environment:
       - DEBUG=${DEBUG}
+    volumes:
+      - ./app/model:/app/model     # ensure model files are mounted
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/"]
       interval: 30s
@@ -20,6 +25,9 @@ services:
           memory: "1g"
 
   streamlit:
+    build:
+      context: .
+      dockerfile: streamlit/Dockerfile   # adjust path if needed
     image: ghcr.io/althu123696/ipl-ii/streamlit:latest
     container_name: streamlit
     restart: always
