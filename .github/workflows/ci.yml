@@ -59,24 +59,24 @@ jobs:
           docker compose -f docker-compose.yml up -d
 
       - name: Verify containers
-        run: docker ps
+        run: docker ps -a
 
       - name: Health check (FastAPI)
         run: |
-          curl http://localhost:8000/ || exit 1
+          Invoke-WebRequest http://localhost:8000/ -UseBasicParsing
 
       - name: Health check (Streamlit)
         run: |
-          curl http://localhost:8501/ || exit 1
+          Invoke-WebRequest http://localhost:8501/ -UseBasicParsing
 
       - name: Health check (Prometheus)
         run: |
-          curl http://localhost:9090/-/healthy || exit 1
+          Invoke-WebRequest http://localhost:9090/-/healthy -UseBasicParsing
 
       - name: Health check (Grafana)
         run: |
-          curl http://localhost:3000/api/health || exit 1
+          Invoke-WebRequest http://localhost:3000/api/health -UseBasicParsing
 
       - name: Health check (MLflow)
         run: |
-          curl http://localhost:5000/ || exit 1
+          Invoke-WebRequest http://localhost:5000/ -UseBasicParsing
