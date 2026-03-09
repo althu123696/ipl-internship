@@ -3,7 +3,7 @@ services:
   fastapi:
     build:
       context: .
-      dockerfile: app/Dockerfile   # adjust if your Dockerfile is elsewhere
+      dockerfile: app/Dockerfile   
     image: ghcr.io/althu123696/ipl-ii/fastapi:latest
     container_name: fastapi
     restart: always
@@ -12,7 +12,7 @@ services:
     environment:
       - DEBUG=${DEBUG}
     volumes:
-      - ./app/model:/app/model     # ensure model files are mounted
+      - ./app/model:/app/model    
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/"]
       interval: 30s
